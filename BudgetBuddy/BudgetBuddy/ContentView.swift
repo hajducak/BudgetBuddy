@@ -1,23 +1,26 @@
-//
-//  ContentView.swift
-//  BudgetBuddy
-//
-//  Created by MacBook Pro on 04/03/2025.
-//
-
 import SwiftUI
+import Firebase
+import FirebaseFirestore
 
 struct ContentView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Firebase Setup Complete!")
+                .padding()
         }
-        .padding()
+        .onAppear {
+            let db = Firestore.firestore()
+            db.collection("test").addDocument(data: ["message": "Hello Firebase"]) { error in
+                if let error = error {
+                    print("Error adding document: \(error)")
+                } else {
+                    print("Document successfully added!")
+                }
+            }
+        }
     }
 }
+
 
 #Preview {
     ContentView()

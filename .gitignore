@@ -12,3 +12,6 @@ Package.resolved
 
 # CocoaPods
 Pods/
+
+# Firebase
+GoogleService-Info.plist
