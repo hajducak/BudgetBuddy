@@ -16,7 +16,8 @@
 ## 🛠️ Tech Stack
 - Swift 5 + SwiftUI
 - Firebase Firestore (Cloud Database)
-- MVVM architecture (potentially VIPER for scalability)
+- Firebase Authentication
+- Clean architecture by VIPER
 - Charts & statistics
 
 ## 🔧 Installation
@@ -24,4 +25,4 @@
    ```bash
    git clone https://github.com/hajducak/BudgetBuddy.git
    ```
-   
+2. Use `main` branch only
