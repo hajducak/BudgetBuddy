@@ -2,6 +2,10 @@
 
 **BudgetBuddy** is a simple iOS app for tracking income and expenses. It allows users to log their financial transactions, view basic statistics, and store data in Firebase.
 
+<div style="display: flex; justify-content: center; gap: 10px;">
+    <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="200">
+</div>
+
 ## 🚀 Features
 ✅ User autentification   
 ✅ Add income and expenses  
