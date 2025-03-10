@@ -8,10 +8,10 @@
 
 ## 🚀 Features
 ✅ User autentification   
-✅ Add income and expenses  
-✅ Categorize transactions  
-✅ View statistics and spending trends  
-✅ Cloud storage with Firebase  
+🧑🏽‍💻 Add income and expenses  
+🧑🏽‍💻 Categorize transactions  
+🧑🏽‍💻 View statistics and spending trends  
+🧑🏽‍💻 Cloud storage with Firebase  
 
 ## 🛠️ Tech Stack
 - Swift 5 + SwiftUI
