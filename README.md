@@ -8,7 +8,7 @@
 </div>
 
 ## 🚀 Features
-✅ User authentication with automatic credential filling and password generation. 
+✅ User authentication with automatic credential filling and password generation.    
 🧑🏽‍💻 Add income and expenses  
 🧑🏽‍💻 Categorize transactions  
 🧑🏽‍💻 View statistics and spending trends  
