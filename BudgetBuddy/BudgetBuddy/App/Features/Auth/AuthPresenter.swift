@@ -5,6 +5,10 @@ protocol AuthPresenterProtocol: AnyObject {
 
     func login()
     func register()
+
+    func getPassword() -> String?
+    func getEmail() -> String?
+    func generateRandomPassword()
 }
 
 class AuthPresenter: AuthPresenterProtocol, ObservableObject {
@@ -22,9 +26,11 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
     var authSuccess: (() -> Void)?
     
     private let interactor: AuthInteractorProtocol
+    private let keychainService: KeychainService
     
-    init(interactor: AuthInteractorProtocol) {
+    init(interactor: AuthInteractorProtocol, keychainService: KeychainService) {
         self.interactor = interactor
+        self.keychainService = keychainService
 
         $email
             .combineLatest($password)
@@ -36,7 +42,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
 
         $name
             .combineLatest($password, $email)
-            .map { name, email, password in
+            .map { name, password, email in
                 return !name.isEmpty && email.isValidEmail && password.count >= 6
             }
             .assign(to: \.registrationEnabled, on: self)
@@ -50,6 +56,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
             switch result {
             case .success:
                 self?.authSuccess?()
+                self?.saveCredentials()
             case .failure(let error):
                 self?.toast = Toast(type: .error(.loginError(error)))
             }
@@ -63,9 +70,29 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
             switch result {
             case .success:
                 self?.authSuccess?()
+                self?.saveCredentials()
             case .failure(let error):
                 self?.toast = Toast(type: .error(.registrationError(error)))
             }
         }
+    }
+    
+    func getPassword() -> String? {
+        keychainService.getPassword()
+    }
+    
+    func getEmail() -> String? {
+        keychainService.getEmail()
+    }
+    
+    private func saveCredentials() {
+        keychainService.savePassword(password)
+        keychainService.saveEmail(email)
+    }
+    
+    func generateRandomPassword() {
+        let length = 12
+        let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
+        password = String((0..<length).map { _ in characters.randomElement()! })
     }
 }

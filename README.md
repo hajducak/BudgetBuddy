@@ -4,10 +4,11 @@
 
 <div style="display: flex; justify-content: center; gap: 10px;">
     <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="200">
+        <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot2.imageset/screenshot2.png" width="200">
 </div>
 
 ## 🚀 Features
-✅ User autentification   
+✅ User authentication with automatic credential filling and password generation. 
 🧑🏽‍💻 Add income and expenses  
 🧑🏽‍💻 Categorize transactions  
 🧑🏽‍💻 View statistics and spending trends  

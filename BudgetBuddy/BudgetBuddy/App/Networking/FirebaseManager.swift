@@ -10,6 +10,7 @@ class FirebaseManager: FirebaseManagerProtocol {
 
     func saveUserToFirestore(user: User, completion: @escaping (Result<Void, Error>) -> Void) {
         let userData = [
+            "name" : user.name,
             "email": user.email,
             "uid": user.id
         ]

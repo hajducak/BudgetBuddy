@@ -12,6 +12,7 @@ struct BudgetBuddyApp: App {
     var body: some Scene {
         WindowGroup {
             appCoordinator.start()
+                .preferredColorScheme(.light)
         }
     }
 }

@@ -19,7 +19,8 @@ class AppCoordinator: ObservableObject {
             authService: authService,
             firebaseManager: firebaseManager
         )
-        let presenter = AuthPresenter(interactor: authInteractor)
+        let keychainService = KeychainService()
+        let presenter = AuthPresenter(interactor: authInteractor, keychainService: keychainService)
         presenter.authSuccess = { [weak self] in
             self?.isAuthenticated = true
         }
