@@ -1,8 +1,7 @@
 import Foundation
 
 protocol OnboardingInteractorProtocol {
-    // TODO: use combine anyPublisher
-    func saveUserData(user: User, completion: @escaping (Result<Void, Error>) -> Void)
+    func saveUserData(user: User, completion: @escaping (Result<Void, AppError>) -> Void)
     var user: User? { get }
 }
 
@@ -15,7 +14,7 @@ class OnboardingInteractor: OnboardingInteractorProtocol {
         self.firebaseManager = firebaseManager
     }
     
-    func saveUserData(user: User, completion: @escaping (Result<Void, Error>) -> Void) {
+    func saveUserData(user: User, completion: @escaping (Result<Void, AppError>) -> Void) {
         firebaseManager.saveUserToFirestore(user: user, completion: completion)
     }
 }

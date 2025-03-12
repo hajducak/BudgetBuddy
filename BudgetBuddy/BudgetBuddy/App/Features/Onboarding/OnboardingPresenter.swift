@@ -6,6 +6,8 @@ class OnboardingPresenter: ObservableObject {
     @Published var currency: String = ""
     @Published var selectedCategories: [Category] = []
     @Published var isFinishOnbaordingEnabled: Bool = false
+    @Published var onbaordingIsLoading: Bool = false
+    @Published var toast: Toast?
     
     let defaultCategories: [Category] = [
         Category(id: UUID().uuidString, name: "🍏 Groceries", type: .expense),
@@ -47,20 +49,21 @@ class OnboardingPresenter: ObservableObject {
             selectedCategories.append(category)
         }
     }
-    // TODO: use combine anyPublisher cancelables
+
     func completeOnboarding() {
         guard let balance = Double(balance) else { return }
         let wallet = Wallet(id: UUID().uuidString, balance: balance, currency: currency, transactions: [])
         guard var user = interactor.user else { return }
         user.wallets = [wallet]
         user.categories = selectedCategories
-        
-        interactor.saveUserData(user: user) { result in
+        onbaordingIsLoading = true
+        interactor.saveUserData(user: user) { [weak self] result in
+            self?.onbaordingIsLoading = false
             switch result {
             case .success:
-                self.router.goToApp()
+                self?.router.goToApp()
             case .failure(let error):
-                print("Failed to save user data: \(error)")
+                self?.toast = Toast(type: .error(error))
             }
         }
     }

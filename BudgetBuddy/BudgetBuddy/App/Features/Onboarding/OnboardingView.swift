@@ -11,6 +11,7 @@ struct OnboardingView: View {
             categorySelectionView
                 .tag(1)
         }
+        .toast($presenter.toast, timeout: 3)
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
         .background(Color(.accent))
     }
@@ -87,7 +88,7 @@ struct OnboardingView: View {
                     }
                 }
             }
-            PrimaryButton(title: "Finish", isLoading: false, isEnabled: presenter.isFinishOnbaordingEnabled) {
+            PrimaryButton(title: "Finish", isLoading: presenter.onbaordingIsLoading, isEnabled: presenter.isFinishOnbaordingEnabled) {
                 presenter.completeOnboarding()
             }.padding(.horizontal, 20)
             Spacer().frame(height: 40)

@@ -58,7 +58,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
                 self?.authSuccess?(false, user)
                 self?.saveCredentials()
             case .failure(let error):
-                self?.toast = Toast(type: .error(.loginError(error)))
+                self?.toast = Toast(type: .error(error))
             }
         }
     }
@@ -72,7 +72,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
                 self?.authSuccess?(true, user)
                 self?.saveCredentials()
             case .failure(let error):
-                self?.toast = Toast(type: .error(.registrationError(error)))
+                self?.toast = Toast(type: .error(error))
             }
         }
     }
@@ -94,5 +94,9 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
         let length = 12
         let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
         password = String((0..<length).map { _ in characters.randomElement()! })
+    }
+    
+    deinit {
+        cancellables.removeAll()
     }
 }

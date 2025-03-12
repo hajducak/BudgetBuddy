@@ -1,6 +1,6 @@
 protocol AuthInteractorProtocol {
-    func register(name: String, email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
-    func login(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
+    func register(name: String, email: String, password: String, completion: @escaping (Result<User, AppError>) -> Void)
+    func login(email: String, password: String, completion: @escaping (Result<User, AppError>) -> Void)
 }
 
 class AuthInteractor: AuthInteractorProtocol {
@@ -12,7 +12,7 @@ class AuthInteractor: AuthInteractorProtocol {
         self.firebaseManager = firebaseManager
     }
 
-    func register(name: String, email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
+    func register(name: String, email: String, password: String, completion: @escaping (Result<User, AppError>) -> Void) {
         authService.register(email: email, password: password) { [weak self] result in
             switch result {
             case .success(let authResult):
@@ -22,16 +22,16 @@ class AuthInteractor: AuthInteractorProtocol {
                     case .success:
                         completion(.success(user))
                     case .failure(let error):
-                        completion(.failure(error))
+                        completion(.failure(.saveToDatabase(error)))
                     }
                 }
             case .failure(let error):
-                completion(.failure(error))
+                completion(.failure(.registrationError(error)))
             }
         }
     }
 
-    func login(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
+    func login(email: String, password: String, completion: @escaping (Result<User, AppError>) -> Void) {
         authService.login(email: email, password: password, completion: completion)
     }
 }
