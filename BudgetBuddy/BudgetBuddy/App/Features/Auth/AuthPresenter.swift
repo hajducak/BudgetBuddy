@@ -1,7 +1,7 @@
 import Combine
 
 protocol AuthPresenterProtocol: AnyObject {
-    var authSuccess: (() -> Void)? { get set }
+    var authSuccess: ((Bool, User) -> Void)? { get set }
 
     func login()
     func register()
@@ -23,7 +23,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    var authSuccess: (() -> Void)?
+    var authSuccess: ((Bool, User) -> Void)?
     
     private let interactor: AuthInteractorProtocol
     private let keychainService: KeychainService
@@ -54,8 +54,8 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
         interactor.login(email: email, password: password) { [weak self] result in
             self?.isLoading = false
             switch result {
-            case .success:
-                self?.authSuccess?()
+            case .success(let user):
+                self?.authSuccess?(false, user)
                 self?.saveCredentials()
             case .failure(let error):
                 self?.toast = Toast(type: .error(.loginError(error)))
@@ -68,8 +68,8 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
         interactor.register(name: name, email: email, password: password) { [weak self] result in
             self?.isLoading = false
             switch result {
-            case .success:
-                self?.authSuccess?()
+            case .success(let user):
+                self?.authSuccess?(true, user)
                 self?.saveCredentials()
             case .failure(let error):
                 self?.toast = Toast(type: .error(.registrationError(error)))
