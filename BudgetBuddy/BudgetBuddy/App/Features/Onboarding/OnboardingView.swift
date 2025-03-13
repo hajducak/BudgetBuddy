@@ -17,16 +17,9 @@ struct OnboardingView: View {
     }
     
     var walletSelectionView: some View {
-        VStack(alignment: .center, spacing: 16) {
-            Spacer()
-            Image(.buddyBudget)
-                .resizable()
-                .scaledToFit()
-                .frame(width: UIScreen.main.bounds.width / 1.5, height: UIScreen.main.bounds.width / 1.5)
-                .padding(.horizontal, 20)
-            Spacer()
+        VStack(alignment: .leading,  spacing: 16) {
             Text("Setup your wallet:")
-                .font(.title2)
+                .font(.headline)
             TextField("Balance", text: $presenter.balance)
                 .keyboardType(.numberPad)
                 .textFieldStyle()
@@ -38,61 +31,66 @@ struct OnboardingView: View {
                     selectedTab = 1
                 }
             }
-            Spacer().frame(height: 40)
-        }.padding(.horizontal, 20)
+        }
+        .authBaseView()
+        .padding(.horizontal, 20)
     }
     
     var categorySelectionView: some View {
-        VStack(alignment: .center, spacing: 16) {
-            Image(.buddyBudget)
-                .resizable()
-                .scaledToFit()
-                .frame(width: UIScreen.main.bounds.width / 1.5, height: UIScreen.main.bounds.width / 1.5)
-                .padding(.horizontal, 20)
+        VStack(alignment: .leading,  spacing: 16) {
             Text("Select Categories you want to use:")
-                .font(.title2)
+                .font(.headline)
                 .padding(.horizontal, 20)
+            Text("Expenses")
+                .font(.headline)
             ScrollView {
-                Text("Expenses")
-                    .font(.headline)
                 ForEach(presenter.defaultCategories.filter { $0.type == .expense }, id: \.id) { category in
-                    HStack {
-                        Text(category.name)
-                        Spacer()
-                        if presenter.selectedCategories.contains(where: { $0.id == category.id }) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 20)
-                    .tap {
-                        presenter.toggleCategorySelection(category)
-                    }
-                }
-                Text("Incomes")
-                    .font(.headline)
-                ForEach(presenter.defaultCategories.filter { $0.type == .income }, id: \.id) { category in
-                    HStack {
-                        Text(category.name)
-                        Spacer()
-                        if presenter.selectedCategories.contains(where: { $0.id == category.id }) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 20)
-                    .tap {
-                        presenter.toggleCategorySelection(category)
-                    }
+                    ChoosableCategoryView(presenter: presenter, category: category)
                 }
             }
+            Text("Incomes")
+                .font(.headline)
+            ScrollView {
+                ForEach(presenter.defaultCategories.filter { $0.type == .income }, id: \.id) { category in
+                    ChoosableCategoryView(presenter: presenter, category: category)
+                }
+            }
+            Spacer()
             PrimaryButton(title: "Finish", isLoading: presenter.onbaordingIsLoading, isEnabled: presenter.isFinishOnbaordingEnabled) {
                 presenter.completeOnboarding()
             }.padding(.horizontal, 20)
-            Spacer().frame(height: 40)
+        }.authBaseView()
+    }
+}
+
+struct ChoosableCategoryView: View {
+    @ObservedObject var presenter: OnboardingPresenter
+    var category: Category
+
+    var body: some View {
+        HStack {
+            if presenter.selectedCategories.contains(where: { $0.id == category.id }) {
+                Image(systemName: "checkmark.circle.fill")
+                    .resizable()
+                    .foregroundColor(.blue)
+                    .frame(width: 20, height: 20)
+            } else {
+                ZStack(alignment: .center) {
+                    Circle()
+                        .fill(Color.gray)
+                        .frame(width: 20, height: 20)
+                    Circle()
+                        .fill(Color.accentColor)
+                        .frame(width: 18, height: 18)
+                }
+            }
+            Text(category.name).lineLimit(1)
+            Spacer()
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal, 20)
+        .tap {
+            presenter.toggleCategorySelection(category)
         }
     }
-
 }

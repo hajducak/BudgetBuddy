@@ -6,14 +6,7 @@ struct AuthView: View {
     @State var passwordIsSecured: Bool = true
     
     var body: some View {
-        VStack {
-            Spacer()
-            Image(.buddyBudget)
-                .resizable()
-                .scaledToFit()
-                .frame(width: UIScreen.main.bounds.width / 1.5, height: UIScreen.main.bounds.width / 1.5)
-                .padding(.horizontal, 20)
-            Spacer()
+        VStack(alignment: .leading,  spacing: 16) {
             Picker("Login or Register", selection: $presenter.selectedTab) {
                 Text("Login").tag(0)
                 Text("Registration").tag(1)
@@ -21,15 +14,14 @@ struct AuthView: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
-
+            
             if presenter.selectedTab == 0 {
                 login
             } else {
                 register
             }
-            Spacer()
         }
-        .background(Color(.accent))
+        .authBaseView()
         .toast($presenter.toast, timeout: 3)
         .onAppear {
             if let savedEmail = presenter.getEmail() {
@@ -48,7 +40,7 @@ struct AuthView: View {
             
             SecureField("Password", text: $presenter.password)
                 .textFieldStyle()
-            
+            Spacer()
             PrimaryButton(
                 title: "Login",
                 isLoading: presenter.isLoading,
@@ -93,7 +85,7 @@ struct AuthView: View {
                 }
             }
             .textFieldStyle()
-            
+            Spacer()
             PrimaryButton(
                 title: "Register",
                 isLoading: presenter.isLoading,
@@ -101,6 +93,29 @@ struct AuthView: View {
             ) {
                 presenter.register()
             }
-        }.padding(.horizontal, 20)
+        }
+        .padding(.horizontal, 20)
+    }
+}
+
+struct AuthBaseView: ViewModifier {
+    func body(content: Content) -> some View {
+        VStack(alignment: .center) {
+            Spacer().frame(height: 20)
+            Image(.buddyBudget)
+                .resizable()
+                .scaledToFit()
+                .frame(width: UIScreen.main.bounds.width / 1.5, height: UIScreen.main.bounds.width / 1.5)
+                .padding(.horizontal, 20)
+            Spacer().frame(height: 20)
+            content
+            Spacer().frame(height: 40)
+        }
+        .background(Color(.accent))
+    }
+}
+extension View {
+    func authBaseView() -> some View {
+        modifier(AuthBaseView())
     }
 }
