@@ -22,19 +22,11 @@
 			remoteGlobalIDString = 5286D7DC2D779715006EAE47;
 			remoteInfo = BudgetBuddy;
 		};
-		5286D7F82D779719006EAE47 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5286D7D52D779715006EAE47 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5286D7DC2D779715006EAE47;
-			remoteInfo = BudgetBuddy;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		5286D7DD2D779715006EAE47 /* BudgetBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5286D7ED2D779718006EAE47 /* BudgetBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudgetBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5286D7F72D779719006EAE47 /* BudgetBuddyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudgetBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -46,11 +38,6 @@
 		5286D7F02D779719006EAE47 /* BudgetBuddyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = BudgetBuddyTests;
-			sourceTree = "<group>";
-		};
-		5286D7FA2D779719006EAE47 /* BudgetBuddyUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = BudgetBuddyUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,13 +62,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5286D7F42D779719006EAE47 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -90,7 +70,6 @@
 			children = (
 				5286D7DF2D779715006EAE47 /* BudgetBuddy */,
 				5286D7F02D779719006EAE47 /* BudgetBuddyTests */,
-				5286D7FA2D779719006EAE47 /* BudgetBuddyUITests */,
 				5286D7DE2D779715006EAE47 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -100,7 +79,6 @@
 			children = (
 				5286D7DD2D779715006EAE47 /* BudgetBuddy.app */,
 				5286D7ED2D779718006EAE47 /* BudgetBuddyTests.xctest */,
-				5286D7F72D779719006EAE47 /* BudgetBuddyUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -158,29 +136,6 @@
 			productReference = 5286D7ED2D779718006EAE47 /* BudgetBuddyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		5286D7F62D779719006EAE47 /* BudgetBuddyUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5286D8072D779719006EAE47 /* Build configuration list for PBXNativeTarget "BudgetBuddyUITests" */;
-			buildPhases = (
-				5286D7F32D779719006EAE47 /* Sources */,
-				5286D7F42D779719006EAE47 /* Frameworks */,
-				5286D7F52D779719006EAE47 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				5286D7F92D779719006EAE47 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				5286D7FA2D779719006EAE47 /* BudgetBuddyUITests */,
-			);
-			name = BudgetBuddyUITests;
-			packageProductDependencies = (
-			);
-			productName = BudgetBuddyUITests;
-			productReference = 5286D7F72D779719006EAE47 /* BudgetBuddyUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -195,10 +150,6 @@
 						CreatedOnToolsVersion = 16.1;
 					};
 					5286D7EC2D779718006EAE47 = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = 5286D7DC2D779715006EAE47;
-					};
-					5286D7F62D779719006EAE47 = {
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = 5286D7DC2D779715006EAE47;
 					};
@@ -224,7 +175,6 @@
 			targets = (
 				5286D7DC2D779715006EAE47 /* BudgetBuddy */,
 				5286D7EC2D779718006EAE47 /* BudgetBuddyTests */,
-				5286D7F62D779719006EAE47 /* BudgetBuddyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -238,13 +188,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5286D7EB2D779718006EAE47 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5286D7F52D779719006EAE47 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -268,13 +211,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5286D7F32D779719006EAE47 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -282,11 +218,6 @@
 			isa = PBXTargetDependency;
 			target = 5286D7DC2D779715006EAE47 /* BudgetBuddy */;
 			targetProxy = 5286D7EE2D779718006EAE47 /* PBXContainerItemProxy */;
-		};
-		5286D7F92D779719006EAE47 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5286D7DC2D779715006EAE47 /* BudgetBuddy */;
-			targetProxy = 5286D7F82D779719006EAE47 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -506,40 +437,6 @@
 			};
 			name = Release;
 		};
-		5286D8082D779719006EAE47 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = FMH4876MKB;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hajducak.BudgetBuddyUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = BudgetBuddy;
-			};
-			name = Debug;
-		};
-		5286D8092D779719006EAE47 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = FMH4876MKB;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hajducak.BudgetBuddyUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = BudgetBuddy;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -566,15 +463,6 @@
 			buildConfigurations = (
 				5286D8052D779719006EAE47 /* Debug */,
 				5286D8062D779719006EAE47 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		5286D8072D779719006EAE47 /* Build configuration list for PBXNativeTarget "BudgetBuddyUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5286D8082D779719006EAE47 /* Debug */,
-				5286D8092D779719006EAE47 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

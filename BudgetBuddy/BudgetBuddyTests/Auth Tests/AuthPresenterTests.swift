@@ -4,19 +4,19 @@ import XCTest
 class AuthPresenterTests: XCTestCase {
     var interactor: MockAuthInteractor!
     var keychainService: MockKeychainService!
-    var presenter: AuthPresenter!
+    var sut: AuthPresenter!
     
     override func setUp() {
         super.setUp()
         interactor = MockAuthInteractor()
         keychainService = MockKeychainService()
-        presenter = AuthPresenter(interactor: interactor, keychainService: keychainService)
+        sut = AuthPresenter(interactor: interactor, keychainService: keychainService)
     }
     
     override func tearDown() {
         interactor = nil
         keychainService = nil
-        presenter = nil
+        sut = nil
         super.tearDown()
     }
     
@@ -25,21 +25,21 @@ class AuthPresenterTests: XCTestCase {
         let testUser = User(id: "test-id", name: "Test User", email: "test@example.com")
         interactor.loginResult = .success(testUser)
         
-        presenter.email = "test@example.com"
-        presenter.password = "123456"
+        sut.email = "test@example.com"
+        sut.password = "123456"
         
         var authSuccessCalled = false
         var isNew = false
         var receivedUser: User?
         
-        presenter.authSuccess = { new, user in
+        sut.authSuccess = { new, user in
             authSuccessCalled = true
             isNew = new
             receivedUser = user
             expectation.fulfill()
         }
         
-        presenter.login()
+        sut.login()
         
         waitForExpectations(timeout: 1)
         XCTAssertTrue(interactor.loginCalled)
@@ -55,10 +55,10 @@ class AuthPresenterTests: XCTestCase {
         let testError = NSError(domain: "test", code: 123, userInfo: nil)
         interactor.loginResult = .failure(.loginError(testError))
         
-        presenter.email = "test@example.com"
-        presenter.password = "123456"
+        sut.email = "test@example.com"
+        sut.password = "123456"
         
-        presenter.login()
+        sut.login()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             expectation.fulfill()
@@ -66,8 +66,8 @@ class AuthPresenterTests: XCTestCase {
         
         waitForExpectations(timeout: 1)
         XCTAssertTrue(interactor.loginCalled)
-        XCTAssertNotNil(presenter.toast)
-        if case .error = presenter.toast?.type {
+        XCTAssertNotNil(sut.toast)
+        if case .error = sut.toast?.type {
             // Toast type is correct
         } else {
             XCTFail("Wrong toast type")
@@ -79,22 +79,22 @@ class AuthPresenterTests: XCTestCase {
         let testUser = User(id: "test-id", name: "Test User", email: "test@example.com")
         interactor.registerResult = .success(testUser)
         
-        presenter.name = "Test User"
-        presenter.email = "test@example.com"
-        presenter.password = "123456"
+        sut.name = "Test User"
+        sut.email = "test@example.com"
+        sut.password = "123456"
         
         var authSuccessCalled = false
         var isNew = false
         var receivedUser: User?
         
-        presenter.authSuccess = { new, user in
+        sut.authSuccess = { new, user in
             authSuccessCalled = true
             isNew = new
             receivedUser = user
             expectation.fulfill()
         }
         
-        presenter.register()
+        sut.register()
         
         waitForExpectations(timeout: 1)
         XCTAssertTrue(interactor.registerCalled)
@@ -110,11 +110,11 @@ class AuthPresenterTests: XCTestCase {
         let testError = NSError(domain: "test", code: 123, userInfo: nil)
         interactor.registerResult = .failure(.registrationError(testError))
         
-        presenter.name = "Test User"
-        presenter.email = "test@example.com"
-        presenter.password = "123456"
+        sut.name = "Test User"
+        sut.email = "test@example.com"
+        sut.password = "123456"
         
-        presenter.register()
+        sut.register()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             expectation.fulfill()
@@ -122,8 +122,8 @@ class AuthPresenterTests: XCTestCase {
         
         waitForExpectations(timeout: 1)
         XCTAssertTrue(interactor.registerCalled)
-        XCTAssertNotNil(presenter.toast)
-        if case .error = presenter.toast?.type {
+        XCTAssertNotNil(sut.toast)
+        if case .error = sut.toast?.type {
             // Toast type is correct
         } else {
             XCTFail("Wrong toast type")
@@ -134,43 +134,43 @@ class AuthPresenterTests: XCTestCase {
         keychainService.storedEmail = "stored@example.com"
         keychainService.storedPassword = "storedpassword"
         
-        let email = presenter.getEmail()
-        let password = presenter.getPassword()
+        let email = sut.getEmail()
+        let password = sut.getPassword()
         
         XCTAssertEqual(email, "stored@example.com")
         XCTAssertEqual(password, "storedpassword")
     }
     
     func test_whenGenerateRandomPassword_thenPasswordIsSet() {
-        presenter.generateRandomPassword()
+        sut.generateRandomPassword()
         
-        XCTAssertFalse(presenter.password.isEmpty)
-        XCTAssertGreaterThanOrEqual(presenter.password.count, 6)
+        XCTAssertFalse(sut.password.isEmpty)
+        XCTAssertGreaterThanOrEqual(sut.password.count, 6)
     }
     
     func test_givenData_thenLoginIsEnabled() {
-        presenter.email = "not-an-email"
-        presenter.password = "123"
+        sut.email = "not-an-email"
+        sut.password = "123"
 
-        XCTAssertFalse(presenter.loginEnabled)
+        XCTAssertFalse(sut.loginEnabled)
 
-        presenter.email = "valid@example.com"
-        presenter.password = "123456"
+        sut.email = "valid@example.com"
+        sut.password = "123456"
 
-        XCTAssertTrue(presenter.loginEnabled)
+        XCTAssertTrue(sut.loginEnabled)
     }
     
     func test_givenData_thenRegisterIsEnabled() {
-        presenter.name = ""
-        presenter.email = "not-an-email"
-        presenter.password = "123"
+        sut.name = ""
+        sut.email = "not-an-email"
+        sut.password = "123"
         
-        XCTAssertFalse(presenter.registrationEnabled)
+        XCTAssertFalse(sut.registrationEnabled)
         
-        presenter.name = "Test User"
-        presenter.email = "valid@example.com"
-        presenter.password = "123456"
+        sut.name = "Test User"
+        sut.email = "valid@example.com"
+        sut.password = "123456"
         
-        XCTAssertTrue(presenter.registrationEnabled)
+        XCTAssertTrue(sut.registrationEnabled)
     }
 }

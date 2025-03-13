@@ -5,21 +5,21 @@ class AuthFlowTests: XCTestCase {
     var authService: MockAuthService!
     var firebaseManager: MockFirebaseManager!
     var keychainService: MockKeychainService!
-    var router: MockAuthRouter!
+    var sut: MockAuthRouter!
     
     override func setUp() {
         super.setUp()
         authService = MockAuthService()
         firebaseManager = MockFirebaseManager()
         keychainService = MockKeychainService()
-        router = MockAuthRouter()
+        sut = MockAuthRouter()
     }
     
     override func tearDown() {
         authService = nil
         firebaseManager = nil
         keychainService = nil
-        router = nil
+        sut = nil
         super.tearDown()
     }
     
@@ -37,7 +37,7 @@ class AuthFlowTests: XCTestCase {
         
         presenter.authSuccess = { isNew, user in
             if !isNew {
-                self.router.navigateToHome()
+                self.sut.navigateToHome()
             }
             expectation.fulfill()
         }
@@ -47,7 +47,7 @@ class AuthFlowTests: XCTestCase {
         waitForExpectations(timeout: 1)
         
         XCTAssertTrue(authService.loginCalled)
-        XCTAssertTrue(router.navigateToHomeCalled)
+        XCTAssertTrue(sut.navigateToHomeCalled)
         XCTAssertEqual(keychainService.savedEmail, "test@example.com")
         XCTAssertEqual(keychainService.savedPassword, "password123")
     }
@@ -68,7 +68,7 @@ class AuthFlowTests: XCTestCase {
         
         presenter.authSuccess = { isNew, user in
             if isNew {
-                self.router.navigateToHome()
+                self.sut.navigateToHome()
             }
             expectation.fulfill()
         }
@@ -78,7 +78,7 @@ class AuthFlowTests: XCTestCase {
         waitForExpectations(timeout: 1)
         
         XCTAssertTrue(authService.registerCalled)
-        XCTAssertTrue(router.navigateToHomeCalled)
+        XCTAssertTrue(sut.navigateToHomeCalled)
         XCTAssertEqual(keychainService.savedEmail, "new@example.com")
         XCTAssertEqual(keychainService.savedPassword, "password123")
     }

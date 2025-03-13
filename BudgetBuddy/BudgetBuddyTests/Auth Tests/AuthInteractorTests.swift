@@ -4,19 +4,19 @@ import XCTest
 class AuthInteractorTests: XCTestCase {
     var authService: MockAuthService!
     var firebaseManager: MockFirebaseManager!
-    var interactor: AuthInteractor!
+    var sut: AuthInteractor!
     
     override func setUp() {
         super.setUp()
         authService = MockAuthService()
         firebaseManager = MockFirebaseManager()
-        interactor = AuthInteractor(authService: authService, firebaseManager: firebaseManager)
+        sut = AuthInteractor(authService: authService, firebaseManager: firebaseManager)
     }
     
     override func tearDown() {
         authService = nil
         firebaseManager = nil
-        interactor = nil
+        sut = nil
         super.tearDown()
     }
     
@@ -29,7 +29,7 @@ class AuthInteractorTests: XCTestCase {
         var resultUser: User?
         var resultError: AppError?
         
-        interactor.register(name: "Test User", email: "test@example.com", password: "123456") { result in
+        sut.register(name: "Test User", email: "test@example.com", password: "123456") { result in
             switch result {
             case .success(let user):
                 resultUser = user
@@ -56,7 +56,7 @@ class AuthInteractorTests: XCTestCase {
         var resultUser: User?
         var resultError: AppError?
         
-        interactor.register(name: "Test User", email: "test@example.com", password: "123456") { result in
+        sut.register(name: "Test User", email: "test@example.com", password: "123456") { result in
             switch result {
             case .success(let user):
                 resultUser = user
@@ -87,7 +87,7 @@ class AuthInteractorTests: XCTestCase {
         var resultUser: User?
         var resultError: AppError?
         
-        interactor.login(email: "test@example.com", password: "123456") { result in
+        sut.login(email: "test@example.com", password: "123456") { result in
             switch result {
             case .success(let user):
                 resultUser = user
@@ -112,7 +112,7 @@ class AuthInteractorTests: XCTestCase {
         var resultUser: User?
         var resultError: AppError?
         
-        interactor.login(email: "test@example.com", password: "123456") { result in
+        sut.login(email: "test@example.com", password: "123456") { result in
             switch result {
             case .success(let user):
                 resultUser = user
