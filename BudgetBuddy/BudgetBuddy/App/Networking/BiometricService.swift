@@ -7,8 +7,12 @@ protocol BiometricServiceProtocol {
 }
 
 class BiometricService: BiometricServiceProtocol {
-    private let context = LAContext()
+    private let context: LAContext
     private var error: NSError?
+    
+    init(context: LAContext? = nil) {
+        self.context = context ?? LAContext()
+    }
     
     func canUseBiometrics() -> Bool {
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)

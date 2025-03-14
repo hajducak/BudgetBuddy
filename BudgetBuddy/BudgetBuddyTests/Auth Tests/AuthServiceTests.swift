@@ -1,10 +1,8 @@
 import XCTest
 @testable import BudgetBuddy
-import XCTest
-@testable import BudgetBuddy
 
 class AuthServiceTests: XCTestCase {
-    
+    var biometricService: MockBiometricService!
     var mockAuthService: MockAuthService!
     var mockFirebaseManager: MockFirebaseManager!
     var mockKeychainService: MockKeychainService!
@@ -16,8 +14,9 @@ class AuthServiceTests: XCTestCase {
         mockAuthService = MockAuthService()
         mockFirebaseManager = MockFirebaseManager()
         mockKeychainService = MockKeychainService()
+        biometricService = MockBiometricService()
         interactor = AuthInteractor(authService: mockAuthService, firebaseManager: mockFirebaseManager)
-        presenter = AuthPresenter(interactor: interactor, keychainService: mockKeychainService)
+        presenter = AuthPresenter(interactor: interactor, keychainService: mockKeychainService, biometricService: biometricService)
     }
     
     override func tearDown() {

@@ -22,7 +22,7 @@ class OnboardingPresenterTests: XCTestCase {
     }
 
     func test_toggleCategorySelection() {
-        let category = Category(id: "1", name: "Test", type: .expense)
+        let category = Category(id: "1", name: "Test", type: .expense, subcategories: [])
         sut.toggleCategorySelection(category)
         XCTAssertTrue(sut.selectedCategories.contains { $0.id == category.id })
         

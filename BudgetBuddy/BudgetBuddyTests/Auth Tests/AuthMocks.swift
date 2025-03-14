@@ -1,4 +1,5 @@
 import XCTest
+import LocalAuthentication
 @testable import BudgetBuddy
 
 class MockAuthService: AuthServiceProtocol {
@@ -49,6 +50,8 @@ class MockKeychainService: KeychainService {
     var savedEmail: String?
     var storedPassword: String?
     var storedEmail: String?
+    var savedBiometricEnabled: Bool?
+    var storedBiometricEnabled: Bool = false
     
     override func savePassword(_ password: String) {
         savedPassword = password
@@ -64,6 +67,21 @@ class MockKeychainService: KeychainService {
     
     override func getEmail() -> String? {
         return storedEmail
+    }
+    
+    override func setBiometricEnabled(_ enabled: Bool) {
+        savedBiometricEnabled = enabled
+    }
+    
+    override func isBiometricEnabled() -> Bool {
+        return storedBiometricEnabled
+    }
+    
+    override func clearCredentials() {
+        savedPassword = nil
+        savedEmail = nil
+        storedPassword = nil
+        storedEmail = nil
     }
 }
 
@@ -105,5 +123,32 @@ class MockAuthInteractor: AuthInteractorProtocol {
         if let result = loginResult {
             completion(result)
         }
+    }
+}
+
+class MockBiometricService: BiometricServiceProtocol {
+    var canUseBiometricsResult = false
+    var biometricType: LABiometryType = .none
+    var authenticateResult: Result<Void, Error> = .success(())
+    
+    var canUseBiometricsCalled = false
+    var getBiometricTypeCalled = false
+    var authenticateCalled = false
+    var lastAuthenticationReason: String?
+    
+    func canUseBiometrics() -> Bool {
+        canUseBiometricsCalled = true
+        return canUseBiometricsResult
+    }
+    
+    func getBiometricType() -> LABiometryType {
+        getBiometricTypeCalled = true
+        return biometricType
+    }
+    
+    func authenticate(reason: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        authenticateCalled = true
+        lastAuthenticationReason = reason
+        completion(authenticateResult)
     }
 }

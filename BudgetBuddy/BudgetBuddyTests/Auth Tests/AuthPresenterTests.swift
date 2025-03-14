@@ -1,21 +1,29 @@
 import XCTest
+import LocalAuthentication
 @testable import BudgetBuddy
 
 class AuthPresenterTests: XCTestCase {
     var interactor: MockAuthInteractor!
     var keychainService: MockKeychainService!
+    var biometricService: MockBiometricService!
     var sut: AuthPresenter!
     
     override func setUp() {
         super.setUp()
         interactor = MockAuthInteractor()
         keychainService = MockKeychainService()
-        sut = AuthPresenter(interactor: interactor, keychainService: keychainService)
+        biometricService = MockBiometricService()
+        sut = AuthPresenter(
+            interactor: interactor,
+            keychainService: keychainService,
+            biometricService: biometricService
+        )
     }
     
     override func tearDown() {
         interactor = nil
         keychainService = nil
+        biometricService = nil
         sut = nil
         super.tearDown()
     }
@@ -130,17 +138,6 @@ class AuthPresenterTests: XCTestCase {
         }
     }
     
-    func test_givenData_whenGetCredentials_thenDataAreEqual() {
-        keychainService.storedEmail = "stored@example.com"
-        keychainService.storedPassword = "storedpassword"
-        
-        let email = sut.getEmail()
-        let password = sut.getPassword()
-        
-        XCTAssertEqual(email, "stored@example.com")
-        XCTAssertEqual(password, "storedpassword")
-    }
-    
     func test_whenGenerateRandomPassword_thenPasswordIsSet() {
         sut.generateRandomPassword()
         
@@ -172,5 +169,128 @@ class AuthPresenterTests: XCTestCase {
         sut.password = "123456"
         
         XCTAssertTrue(sut.registrationEnabled)
+    }
+    
+    // MARK: - Biometric Authentication Tests
+    
+    func test_givenBiometricsAvailable_whenInitialized_thenBiometricTypeIsSet() {
+        biometricService.canUseBiometricsResult = true
+        biometricService.biometricType = .faceID
+        
+        sut = AuthPresenter(
+            interactor: interactor,
+            keychainService: keychainService,
+            biometricService: biometricService
+        )
+        
+        XCTAssertTrue(biometricService.canUseBiometricsCalled)
+        XCTAssertTrue(biometricService.getBiometricTypeCalled)
+        XCTAssertEqual(sut.biometricType, "Face ID")
+    }
+    
+    func test_givenBiometricsNotAvailable_whenInitialized_thenBiometricTypeIsNone() {
+        biometricService.canUseBiometricsResult = false
+        
+        sut = AuthPresenter(
+            interactor: interactor,
+            keychainService: keychainService,
+            biometricService: biometricService
+        )
+        
+        XCTAssertTrue(biometricService.canUseBiometricsCalled)
+        XCTAssertEqual(sut.biometricType, "None")
+    }
+    
+    func test_givenBiometricsAvailable_whenAuthenticating_thenSuccess() {
+        let expectation = self.expectation(description: "Biometric authentication success")
+        biometricService.canUseBiometricsResult = true
+        biometricService.authenticateResult = .success(())
+        keychainService.storedEmail = "test@example.com"
+        keychainService.storedPassword = "password123"
+        
+        let testUser = User(id: "test-id", name: "Test User", email: "test@example.com")
+        interactor.loginResult = .success(testUser)
+        
+        var authSuccessCalled = false
+        sut.authSuccess = { isNew, _ in
+            authSuccessCalled = true
+            XCTAssertFalse(isNew)
+            expectation.fulfill()
+        }
+        
+        sut.authenticateWithBiometrics()
+        
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(biometricService.authenticateCalled)
+        XCTAssertEqual(biometricService.lastAuthenticationReason, "Access your BudgetBuddy account")
+        XCTAssertTrue(authSuccessCalled)
+        XCTAssertEqual(sut.email, "test@example.com")
+        XCTAssertEqual(sut.password, "password123")
+    }
+    
+    func test_givenBiometricsNotAvailable_whenAuthenticating_thenFailure() {
+        biometricService.canUseBiometricsResult = false
+        
+        sut.authenticateWithBiometrics()
+        
+        XCTAssertNotNil(sut.toast)
+        if case .error(let error) = sut.toast?.type {
+            XCTAssertEqual(error.localizedDescription, AppError.customError("Biometric authentication not available").localizedDescription)
+        } else {
+            XCTFail("Wrong toast type")
+        }
+    }
+    
+    func test_givenBiometricsNotEnrolled_whenAuthenticating_thenProperError() {
+        let expectation = self.expectation(description: "Biometric authentication failure")
+        biometricService.canUseBiometricsResult = true
+        biometricService.authenticateResult = .failure(LAError(.biometryNotEnrolled))
+        
+        sut.authenticateWithBiometrics()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1)
+        XCTAssertNotNil(sut.toast)
+        if case .error(let error) = sut.toast?.type {
+            let expectedMessage = "Please set up \(sut.biometricType) in your device settings"
+            XCTAssertEqual(error.localizedDescription, AppError.customError(expectedMessage).localizedDescription)
+        } else {
+            XCTFail("Wrong toast type")
+        }
+    }
+    
+    func test_whenEnablingBiometrics_thenStateIsUpdated() {
+        sut.biometricType = "Face ID"
+        sut.showBiometricPrompt = true
+        
+        sut.enableBiometricAuthentication()
+        
+        XCTAssertTrue(keychainService.savedBiometricEnabled == true)
+        XCTAssertFalse(sut.showBiometricPrompt)
+        XCTAssertNotNil(sut.toast)
+        if case .success(let message) = sut.toast?.type {
+            XCTAssertEqual(message, "Face ID enabled successfully")
+        } else {
+            XCTFail("Wrong toast type")
+        }
+    }
+    
+    func test_givenSuccessfulRegistration_whenBiometricsAvailable_thenPromptShown() {
+        let expectation = self.expectation(description: "Registration success")
+        let testUser = User(id: "test-id", name: "Test User", email: "test@example.com")
+        interactor.registerResult = .success(testUser)
+        biometricService.canUseBiometricsResult = true
+        
+        sut.register()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(sut.showBiometricPrompt)
     }
 }
