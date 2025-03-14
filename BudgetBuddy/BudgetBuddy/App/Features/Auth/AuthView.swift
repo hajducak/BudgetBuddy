@@ -23,9 +23,7 @@ struct AuthView: View {
         }
         .authBaseView()
         .toast($presenter.toast, timeout: 3)
-        .sheet(isPresented: $presenter.showBiometricPrompt) {
-            biometricPromptView
-        }
+        .sheet(isPresented: $presenter.showBiometricPrompt) { biometricPromptView }
         .onAppear {
             if presenter.biometricType != "None" && presenter.keychainService.isBiometricEnabled() {
                 presenter.authenticateWithBiometrics()
@@ -37,25 +35,14 @@ struct AuthView: View {
         VStack(spacing: 16) {
             TextField("Email", text: $presenter.email)
                 .textFieldStyle()
-            
             SecureField("Password", text: $presenter.password)
                 .textFieldStyle()
-            
             Spacer()
             
             if presenter.biometricType != "None" && presenter.keychainService.isBiometricEnabled() {
-                Button(action: {
-                    presenter.authenticateWithBiometrics()
-                }) {
-                    HStack {
-                        Image(systemName: presenter.biometricType == "Face ID" ? "faceid" : "touchid")
-                        Text("Login with \(presenter.biometricType)")
-                    }
-                }
-                .buttonStyle(.bordered)
-                .padding(.bottom, 8)
+                faceIDButton
             }
-            
+
             PrimaryButton(
                 title: "Login",
                 isLoading: presenter.isLoading,
@@ -143,6 +130,22 @@ struct AuthView: View {
         }
         .padding()
         .presentationDetents([.height(300)])
+    }
+    
+    var faceIDButton: some View {
+        Button(action: {
+            presenter.authenticateWithBiometrics()
+        }) {
+            HStack {
+                Image(systemName: presenter.biometricType == "Face ID" ? "faceid" : "touchid")
+                Text("Login with \(presenter.biometricType)")
+            }.foregroundColor(.white)
+                .padding()
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.blue)
+        .cornerRadius(12)
+        .frame(height: 48)
     }
 }
 

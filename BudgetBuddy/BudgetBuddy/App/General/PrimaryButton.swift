@@ -15,7 +15,6 @@ struct PrimaryButton: View {
                 } else {
                     Text(title)
                         .foregroundColor(.white)
-                        .fontWeight(.bold)
                 }
             }
             .frame(maxWidth: .infinity)
