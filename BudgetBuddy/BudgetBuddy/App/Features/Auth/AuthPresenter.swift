@@ -19,7 +19,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
     @Published var loginEnabled = false
     @Published var registrationEnabled = false
     @Published var showBiometricPrompt = false
-    @Published var biometricType: String = "None"
+    @Published var biometricType: BiometricType = .none
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -40,14 +40,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
     
     private func setupBiometricType() {
         if biometricService.canUseBiometrics() {
-            switch biometricService.getBiometricType() {
-            case .faceID:
-                biometricType = "Face ID"
-            case .touchID:
-                biometricType = "Touch ID"
-            default:
-                biometricType = "None"
-            }
+            biometricType = BiometricType(from: biometricService.getBiometricType())
         }
     }
     
@@ -119,7 +112,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
                     case .userFallback, .biometryLockout:
                         break
                     case .biometryNotEnrolled:
-                        self?.toast = Toast(type: .error(AppError.customError("Please set up \(self?.biometricType ?? "biometric authentication") in your device settings")))
+                        self?.toast = Toast(type: .error(AppError.customError("Please set up \(self?.biometricType.displayName ?? "biometric authentication") in your device settings")))
                     case .biometryNotAvailable:
                         self?.keychainService.setBiometricEnabled(false)
                         self?.toast = Toast(type: .error(AppError.customError("Biometric authentication is no longer available")))
@@ -136,7 +129,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
     func enableBiometricAuthentication() {
         keychainService.setBiometricEnabled(true)
         showBiometricPrompt = false
-        toast = Toast(type: .success("\(biometricType) enabled successfully"))
+        toast = Toast(type: .success("\(biometricType.displayName) enabled successfully"))
     }
     
     private func getPassword() -> String? {

@@ -23,9 +23,11 @@ struct AuthView: View {
         }
         .authBaseView()
         .toast($presenter.toast, timeout: 3)
-        .sheet(isPresented: $presenter.showBiometricPrompt) { biometricPromptView }
+        .sheet(isPresented: $presenter.showBiometricPrompt) {
+            biometricPromptView
+        }
         .onAppear {
-            if presenter.biometricType != "None" && presenter.keychainService.isBiometricEnabled() {
+            if presenter.biometricType != .none && presenter.keychainService.isBiometricEnabled() {
                 presenter.authenticateWithBiometrics()
             }
         }
@@ -39,7 +41,7 @@ struct AuthView: View {
                 .textFieldStyle()
             Spacer()
             
-            if presenter.biometricType != "None" && presenter.keychainService.isBiometricEnabled() {
+            if presenter.biometricType != .none && presenter.keychainService.isBiometricEnabled() {
                 faceIDButton
             }
 
@@ -101,17 +103,17 @@ struct AuthView: View {
     
     var biometricPromptView: some View {
         VStack(spacing: 20) {
-            Image(systemName: presenter.biometricType == "Face ID" ? "faceid" : "touchid")
+            Image(systemName: presenter.biometricType.systemImageName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 60, height: 60)
                 .foregroundColor(.blue)
             
-            Text("Enable \(presenter.biometricType)?")
+            Text("Enable \(presenter.biometricType.displayName)?")
                 .font(.title2)
                 .bold()
             
-            Text("Would you like to enable \(presenter.biometricType) for quick and secure access to your account?")
+            Text("Would you like to enable \(presenter.biometricType.displayName) for quick and secure access to your account?")
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
             
@@ -137,8 +139,8 @@ struct AuthView: View {
             presenter.authenticateWithBiometrics()
         }) {
             HStack {
-                Image(systemName: presenter.biometricType == "Face ID" ? "faceid" : "touchid")
-                Text("Login with \(presenter.biometricType)")
+                Image(systemName: presenter.biometricType.systemImageName)
+                Text("Login with \(presenter.biometricType.displayName)")
             }.foregroundColor(.white)
                 .padding()
         }

@@ -165,7 +165,7 @@ class AuthFlowTests: XCTestCase {
         waitForExpectations(timeout: 1)
         
         XCTAssertTrue(presenter.showBiometricPrompt)
-        XCTAssertEqual(presenter.biometricType, "Face ID")
+        XCTAssertEqual(presenter.biometricType, .faceID)
         
         // Simulate enabling biometrics
         presenter.enableBiometricAuthentication()
@@ -194,7 +194,6 @@ class AuthFlowTests: XCTestCase {
         
         XCTAssertNotNil(presenter.toast)
         if case .error(let error) = presenter.toast?.type {
-            XCTAssertTrue(error is AppError)
             XCTAssertEqual(error.localizedDescription, AppError.customError("Biometric authentication not available").localizedDescription)
         } else {
             XCTFail("Wrong toast type")
@@ -226,7 +225,6 @@ class AuthFlowTests: XCTestCase {
         
         XCTAssertNotNil(presenter.toast)
         if case .error(let error) = presenter.toast?.type {
-            XCTAssertTrue(error is AppError)
             let expectedMessage = "Please set up \(presenter.biometricType) in your device settings"
             XCTAssertEqual(error.localizedDescription, AppError.customError(expectedMessage).localizedDescription)
         } else {

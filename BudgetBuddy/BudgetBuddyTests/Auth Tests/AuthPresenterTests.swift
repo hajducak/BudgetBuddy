@@ -185,7 +185,7 @@ class AuthPresenterTests: XCTestCase {
         
         XCTAssertTrue(biometricService.canUseBiometricsCalled)
         XCTAssertTrue(biometricService.getBiometricTypeCalled)
-        XCTAssertEqual(sut.biometricType, "Face ID")
+        XCTAssertEqual(sut.biometricType, .faceID)
     }
     
     func test_givenBiometricsNotAvailable_whenInitialized_thenBiometricTypeIsNone() {
@@ -198,7 +198,7 @@ class AuthPresenterTests: XCTestCase {
         )
         
         XCTAssertTrue(biometricService.canUseBiometricsCalled)
-        XCTAssertEqual(sut.biometricType, "None")
+        XCTAssertEqual(sut.biometricType, .none)
     }
     
     func test_givenBiometricsAvailable_whenAuthenticating_thenSuccess() {
@@ -245,6 +245,7 @@ class AuthPresenterTests: XCTestCase {
         let expectation = self.expectation(description: "Biometric authentication failure")
         biometricService.canUseBiometricsResult = true
         biometricService.authenticateResult = .failure(LAError(.biometryNotEnrolled))
+        sut.biometricType = .faceID
         
         sut.authenticateWithBiometrics()
         
@@ -255,7 +256,7 @@ class AuthPresenterTests: XCTestCase {
         waitForExpectations(timeout: 1)
         XCTAssertNotNil(sut.toast)
         if case .error(let error) = sut.toast?.type {
-            let expectedMessage = "Please set up \(sut.biometricType) in your device settings"
+            let expectedMessage = "Please set up \(sut.biometricType.displayName) in your device settings"
             XCTAssertEqual(error.localizedDescription, AppError.customError(expectedMessage).localizedDescription)
         } else {
             XCTFail("Wrong toast type")
@@ -263,7 +264,7 @@ class AuthPresenterTests: XCTestCase {
     }
     
     func test_whenEnablingBiometrics_thenStateIsUpdated() {
-        sut.biometricType = "Face ID"
+        sut.biometricType = .faceID
         sut.showBiometricPrompt = true
         
         sut.enableBiometricAuthentication()
