@@ -13,9 +13,29 @@ struct CustomTextFieldStyle: ViewModifier {
     }
 }
 
+struct AuthBaseView: ViewModifier {
+    func body(content: Content) -> some View {
+        VStack(alignment: .center) {
+            Spacer().frame(height: 20)
+            Image(.buddyBudget)
+                .resizable()
+                .scaledToFit()
+                .frame(width: UIScreen.main.bounds.width / 1.5, height: UIScreen.main.bounds.width / 1.5)
+                .padding(.horizontal, 20)
+            Spacer().frame(height: 20)
+            content
+        }
+        .background(Color(.accent))
+    }
+}
+
 extension View {
     func textFieldStyle() -> some View {
         modifier(CustomTextFieldStyle())
+    }
+    
+    func authBaseView() -> some View {
+        modifier(AuthBaseView())
     }
 }
                  
