@@ -33,7 +33,12 @@ class AppCoordinator: ObservableObject {
             firebaseManager: firebaseManager
         )
         let keychainService = KeychainService()
-        let presenter = AuthPresenter(interactor: authInteractor, keychainService: keychainService)
+        let biometricService = BiometricService()
+        let presenter = AuthPresenter(
+            interactor: authInteractor,
+            keychainService: keychainService,
+            biometricService: biometricService
+        )
         presenter.authSuccess = { [weak self] isRegistration, user in
             self?.user = user
             if isRegistration {

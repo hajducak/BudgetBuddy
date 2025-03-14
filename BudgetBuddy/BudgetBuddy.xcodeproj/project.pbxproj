@@ -29,9 +29,22 @@
 		5286D7ED2D779718006EAE47 /* BudgetBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BudgetBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		525190832D843FC200CFE9D3 /* Exceptions for "BudgetBuddy" folder in "BudgetBuddy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5286D7DC2D779715006EAE47 /* BudgetBuddy */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5286D7DF2D779715006EAE47 /* BudgetBuddy */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				525190832D843FC200CFE9D3 /* Exceptions for "BudgetBuddy" folder in "BudgetBuddy" target */,
+			);
 			path = BudgetBuddy;
 			sourceTree = "<group>";
 		};
@@ -352,6 +365,8 @@
 				DEVELOPMENT_TEAM = FMH4876MKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BudgetBuddy/Info.plist;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "BudgetBuddy uses Face ID/Touch ID to securely access your account.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -381,6 +396,8 @@
 				DEVELOPMENT_TEAM = FMH4876MKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BudgetBuddy/Info.plist;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "BudgetBuddy uses Face ID/Touch ID to securely access your account.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

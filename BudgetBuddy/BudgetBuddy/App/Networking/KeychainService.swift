@@ -18,4 +18,18 @@ class KeychainService {
     func getPassword() -> String? {
         return try? keychain.get("password")
     }
+    
+    func setBiometricEnabled(_ enabled: Bool) {
+        try? keychain.set(String(enabled), key: "biometric_enabled")
+    }
+    
+    func isBiometricEnabled() -> Bool {
+        guard let value = try? keychain.get("biometric_enabled") else { return false }
+        return value == "true"
+    }
+    
+    func clearCredentials() {
+        try? keychain.remove("email")
+        try? keychain.remove("password")
+    }
 }

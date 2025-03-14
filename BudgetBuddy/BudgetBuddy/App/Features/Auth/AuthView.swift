@@ -23,12 +23,12 @@ struct AuthView: View {
         }
         .authBaseView()
         .toast($presenter.toast, timeout: 3)
+        .sheet(isPresented: $presenter.showBiometricPrompt) {
+            biometricPromptView
+        }
         .onAppear {
-            if let savedEmail = presenter.getEmail() {
-                presenter.email = savedEmail
-            }
-            if let savedPassword = presenter.getPassword() {
-                presenter.password = savedPassword
+            if presenter.biometricType != "None" && presenter.keychainService.isBiometricEnabled() {
+                presenter.authenticateWithBiometrics()
             }
         }
     }
@@ -40,7 +40,22 @@ struct AuthView: View {
             
             SecureField("Password", text: $presenter.password)
                 .textFieldStyle()
+            
             Spacer()
+            
+            if presenter.biometricType != "None" && presenter.keychainService.isBiometricEnabled() {
+                Button(action: {
+                    presenter.authenticateWithBiometrics()
+                }) {
+                    HStack {
+                        Image(systemName: presenter.biometricType == "Face ID" ? "faceid" : "touchid")
+                        Text("Login with \(presenter.biometricType)")
+                    }
+                }
+                .buttonStyle(.bordered)
+                .padding(.bottom, 8)
+            }
+            
             PrimaryButton(
                 title: "Login",
                 isLoading: presenter.isLoading,
@@ -96,6 +111,39 @@ struct AuthView: View {
         }
         .padding(.horizontal, 20)
     }
+    
+    var biometricPromptView: some View {
+        VStack(spacing: 20) {
+            Image(systemName: presenter.biometricType == "Face ID" ? "faceid" : "touchid")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 60, height: 60)
+                .foregroundColor(.blue)
+            
+            Text("Enable \(presenter.biometricType)?")
+                .font(.title2)
+                .bold()
+            
+            Text("Would you like to enable \(presenter.biometricType) for quick and secure access to your account?")
+                .multilineTextAlignment(.center)
+                .foregroundColor(.secondary)
+            
+            HStack(spacing: 20) {
+                Button("Not Now") {
+                    presenter.showBiometricPrompt = false
+                }
+                .buttonStyle(.bordered)
+                
+                Button("Enable") {
+                    presenter.enableBiometricAuthentication()
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding(.top)
+        }
+        .padding()
+        .presentationDetents([.height(300)])
+    }
 }
 
 struct AuthBaseView: ViewModifier {
@@ -113,6 +161,7 @@ struct AuthBaseView: ViewModifier {
         .background(Color(.accent))
     }
 }
+
 extension View {
     func authBaseView() -> some View {
         modifier(AuthBaseView())

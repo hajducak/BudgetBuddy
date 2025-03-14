@@ -1,13 +1,11 @@
 import Combine
+import LocalAuthentication
 
 protocol AuthPresenterProtocol: AnyObject {
     var authSuccess: ((Bool, User) -> Void)? { get set }
 
     func login()
     func register()
-
-    func getPassword() -> String?
-    func getEmail() -> String?
     func generateRandomPassword()
 }
 
@@ -20,18 +18,40 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
     @Published var password = ""
     @Published var loginEnabled = false
     @Published var registrationEnabled = false
-
+    @Published var showBiometricPrompt = false
+    @Published var biometricType: String = "None"
+    
     private var cancellables = Set<AnyCancellable>()
-
+    
     var authSuccess: ((Bool, User) -> Void)?
     
     private let interactor: AuthInteractorProtocol
-    private let keychainService: KeychainService
+    let keychainService: KeychainService
+    private let biometricService: BiometricServiceProtocol
     
-    init(interactor: AuthInteractorProtocol, keychainService: KeychainService) {
+    init(interactor: AuthInteractorProtocol, keychainService: KeychainService, biometricService: BiometricServiceProtocol) {
         self.interactor = interactor
         self.keychainService = keychainService
-
+        self.biometricService = biometricService
+        
+        setupBiometricType()
+        setupValidation()
+    }
+    
+    private func setupBiometricType() {
+        if biometricService.canUseBiometrics() {
+            switch biometricService.getBiometricType() {
+            case .faceID:
+                biometricType = "Face ID"
+            case .touchID:
+                biometricType = "Touch ID"
+            default:
+                biometricType = "None"
+            }
+        }
+    }
+    
+    private func setupValidation() {
         $email
             .combineLatest($password)
             .map { email, password in
@@ -39,7 +59,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
             }
             .assign(to: \.loginEnabled, on: self)
             .store(in: &cancellables)
-
+        
         $name
             .combineLatest($password, $email)
             .map { name, password, email in
@@ -70,6 +90,7 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
             switch result {
             case .success(let user):
                 self?.authSuccess?(true, user)
+                self?.showBiometricPrompt = self?.biometricService.canUseBiometrics() ?? false
                 self?.saveCredentials()
             case .failure(let error):
                 self?.toast = Toast(type: .error(error))
@@ -77,11 +98,52 @@ class AuthPresenter: AuthPresenterProtocol, ObservableObject {
         }
     }
     
-    func getPassword() -> String? {
+    func authenticateWithBiometrics() {
+        guard biometricService.canUseBiometrics() else {
+            toast = Toast(type: .error(AppError.customError("Biometric authentication not available")))
+            return
+        }
+        
+        biometricService.authenticate(reason: "Access your BudgetBuddy account") { [weak self] result in
+            switch result {
+            case .success:
+                if let savedEmail = self?.getEmail(),
+                   let savedPassword = self?.getPassword() {
+                    self?.email = savedEmail
+                    self?.password = savedPassword
+                    self?.login()
+                }
+            case .failure(let error):
+                if let laError = error as? LAError {
+                    switch laError.code {
+                    case .userFallback, .biometryLockout:
+                        break
+                    case .biometryNotEnrolled:
+                        self?.toast = Toast(type: .error(AppError.customError("Please set up \(self?.biometricType ?? "biometric authentication") in your device settings")))
+                    case .biometryNotAvailable:
+                        self?.keychainService.setBiometricEnabled(false)
+                        self?.toast = Toast(type: .error(AppError.customError("Biometric authentication is no longer available")))
+                    default:
+                        self?.toast = Toast(type: .error(AppError.customError(error.localizedDescription)))
+                    }
+                } else {
+                    self?.toast = Toast(type: .error(AppError.customError(error.localizedDescription)))
+                }
+            }
+        }
+    }
+    
+    func enableBiometricAuthentication() {
+        keychainService.setBiometricEnabled(true)
+        showBiometricPrompt = false
+        toast = Toast(type: .success("\(biometricType) enabled successfully"))
+    }
+    
+    private func getPassword() -> String? {
         keychainService.getPassword()
     }
     
-    func getEmail() -> String? {
+    private func getEmail() -> String? {
         keychainService.getEmail()
     }
     
