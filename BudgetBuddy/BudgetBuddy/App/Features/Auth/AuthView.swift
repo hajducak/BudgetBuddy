@@ -109,7 +109,6 @@ struct AuthBaseView: ViewModifier {
                 .padding(.horizontal, 20)
             Spacer().frame(height: 20)
             content
-            Spacer().frame(height: 40)
         }
         .background(Color(.accent))
     }

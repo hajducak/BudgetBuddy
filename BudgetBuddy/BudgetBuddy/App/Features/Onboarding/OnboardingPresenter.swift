@@ -9,23 +9,6 @@ class OnboardingPresenter: ObservableObject {
     @Published var onbaordingIsLoading: Bool = false
     @Published var toast: Toast?
     
-    let defaultCategories: [Category] = [
-        Category(id: UUID().uuidString, name: "🍏 Groceries", type: .expense),
-        Category(id: UUID().uuidString, name: "🏠 Home", type: .expense),
-        Category(id: UUID().uuidString, name: "🚗 Transportation", type: .expense),
-        Category(id: UUID().uuidString, name: "🎬 Entertainment", type: .expense),
-        Category(id: UUID().uuidString, name: "💪 Health", type: .expense),
-        Category(id: UUID().uuidString, name: "🎓 Education", type: .expense),
-        Category(id: UUID().uuidString, name: "🎁 Gifts", type: .expense),
-        Category(id: UUID().uuidString, name: "🌍 Others", type: .expense),
-        Category(id: UUID().uuidString, name: "💼 Salary", type: .income),
-        Category(id: UUID().uuidString, name: "💰 Bonuses", type: .income),
-        Category(id: UUID().uuidString, name: "🎁 Gifts", type: .income),
-        Category(id: UUID().uuidString, name: "📈 Investments", type: .income),
-        Category(id: UUID().uuidString, name: "💸 Sales", type: .income),
-        Category(id: UUID().uuidString, name: "🔀 Other", type: .income)
-    ]
-    
     private var cancellables = Set<AnyCancellable>()
     private let interactor: OnboardingInteractorProtocol
     private let router: OnboardingRouterProtocol

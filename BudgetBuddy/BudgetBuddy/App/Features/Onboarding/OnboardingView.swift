@@ -3,45 +3,56 @@ import SwiftUI
 struct OnboardingView: View {
     @ObservedObject var presenter: OnboardingPresenter
     @State private var selectedTab = 0
+    @FocusState private var isBalanceFieldFocused: Bool
+    @FocusState private var isCurrencyFieldFocused: Bool
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            walletSelectionView
-                .tag(0)
-            categorySelectionView
-                .tag(1)
-        }
-        .toast($presenter.toast, timeout: 3)
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-        .background(Color(.accent))
-    }
-    
-    var walletSelectionView: some View {
-        VStack(alignment: .leading,  spacing: 16) {
-            Text("Setup your wallet:")
-                .font(.headline)
-            TextField("Balance", text: $presenter.balance)
-                .keyboardType(.numberPad)
-                .textFieldStyle()
-            TextField("Currency", text: $presenter.currency)
-                .textFieldStyle()
-            Spacer()
-            PrimaryButton(title: "Next", isLoading: false, isEnabled: true) {
-                withAnimation {
-                    selectedTab = 1
+        VStack(alignment: .leading,  spacing: 8) {
+            ScrollView {
+                VStack(alignment: .leading,  spacing: 8) {
+                    Text("Onboarding")
+                        .font(.largeTitle).bold()
+                    Text("Setup your wallet:")
+                        .font(.headline)
+                    TextField("Balance", text: $presenter.balance)
+                        .keyboardType(.numberPad)
+                        .textFieldStyle()
+                        .focused($isBalanceFieldFocused)
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                if isBalanceFieldFocused {
+                                    Spacer()
+                                    Button("Done") {
+                                        isBalanceFieldFocused = false
+                                    }
+                                    .foregroundColor(.blue)
+                                }
+                            }
+                        }
+                    TextField("Currency", text: $presenter.currency)
+                        .textFieldStyle()
+                        .focused($isCurrencyFieldFocused)
                 }
+                categorySelectionView
+            }
+            Spacer()
+            PrimaryButton(
+                title: "Finish",
+                isLoading: presenter.onbaordingIsLoading,
+                isEnabled: presenter.isFinishOnbaordingEnabled
+            ) {
+                presenter.completeOnboarding()
             }
         }
-        .authBaseView()
         .padding(.horizontal, 20)
+        .toast($presenter.toast, timeout: 3)
+        .background(Color(.accent))
     }
     
     var categorySelectionView: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Spacer()
             Text("Select Categories you want to use:")
                 .font(.headline)
-                .padding(.horizontal, 20)
             VStack(alignment: .leading, spacing: 10) {
                 Text("Expenses")
                     .font(.headline)
@@ -52,13 +63,12 @@ struct OnboardingView: View {
                     ],
                     spacing: 10
                 ) {
-                    ForEach(presenter.defaultCategories.filter { $0.type == .expense }, id: \.id) { category in
+                    ForEach(Category.predefinedCategories.filter { $0.type == .expense }, id: \.id) { category in
                         ChoosableCategoryView(presenter: presenter, category: category)
                             .frame(maxWidth: .infinity)
                     }
                 }
             }
-            .padding(.horizontal, 20)
             
             VStack(alignment: .leading, spacing: 10) {
                 Text("Incomes")
@@ -70,23 +80,12 @@ struct OnboardingView: View {
                     ],
                     spacing: 10
                 ) {
-                    ForEach(presenter.defaultCategories.filter { $0.type == .income }, id: \.id) { category in
+                    ForEach(Category.predefinedCategories.filter { $0.type == .income }, id: \.id) { category in
                         ChoosableCategoryView(presenter: presenter, category: category)
                             .frame(maxWidth: .infinity)
                     }
                 }
             }
-            .padding(.horizontal, 20)
-            Spacer()
-            PrimaryButton(
-                title: "Finish",
-                isLoading: presenter.onbaordingIsLoading,
-                isEnabled: presenter.isFinishOnbaordingEnabled
-            ) {
-                presenter.completeOnboarding()
-            }
-            .padding(.horizontal, 20)
-            Spacer().frame(height: 25)
         }
     }
 }
