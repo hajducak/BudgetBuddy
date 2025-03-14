@@ -5,8 +5,8 @@
 <div style="display: flex; justify-content: center; gap: 10px;">
     <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot1.imageset/screenshot1.png" width="150">
     <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot4.imageset/screenshot4.png" width="150">
-    <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot5.imageset/screenshot5.png" width="150">
     <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot2.imageset/screenshot2.png" width="150">
+    <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot5.imageset/screenshot5.png" width="150">
     <img src="BudgetBuddy/BudgetBuddy/Assets.xcassets/Screenshots/screenshot3.imageset/screenshot3.png" width="150">
 </div>
 
