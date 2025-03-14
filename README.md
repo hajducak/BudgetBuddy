@@ -14,6 +14,8 @@
 ✅ User authentication with automatic credential filling and password generation.       
 ✅ User FaceID/TouchID login autentification.      
 ✅ User Onbaording - setup wallet and basic categories.    
+
+## 🔮 Future Features
 🧑🏽‍💻 Add income and expenses  
 🧑🏽‍💻 Categorize transactions  
 🧑🏽‍💻 View statistics and spending trends  
@@ -32,3 +34,10 @@
    git clone https://github.com/hajducak/BudgetBuddy.git
    ```
 2. Use `main` branch only
+
+## 🪪 Contribution
+
+If you want to contribute to the project, fork the repository, create a new branch, make changes, and submit a pull request.
+License
+
+This project is available under the MIT license.
